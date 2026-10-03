@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laravel Eloquent &amp; Query Builder — Revision Reference</title>
+<style>
+:root{
+  --bg:#0d0f14; --bg2:#141821; --bg3:#1b202b; --line:#262c3a; --line2:#323a4c;
+  --tx:#e6e9f0; --tx2:#a3abbd; --tx3:#6f7a90;
+  --am:#f0b35b; --vi:#a79bf2; --te:#5fd0ab; --ro:#f08a8a; --bl:#7fb6f0;
+  --mono:"JetBrains Mono","SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--bl)}
+header{position:sticky;top:0;z-index:20;background:rgba(13,15,20,.93);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 22px}
+.hd{display:flex;align-items:center;gap:16px;flex-wrap:wrap;max-width:1500px;margin:0 auto}
+.brand{font-size:16px;font-weight:600;letter-spacing:-.2px;white-space:nowrap}
+.brand span{color:var(--am)}
+#q{flex:1;min-width:200px;background:var(--bg3);border:1px solid var(--line2);color:var(--tx);border-radius:9px;padding:9px 13px;font-size:14px;font-family:var(--sans);outline:none}
+#q:focus{border-color:var(--am)}
+#q::placeholder{color:var(--tx3)}
+#cnt{font-size:12.5px;color:var(--tx3);font-family:var(--mono);white-space:nowrap}
+.wrap{max-width:1500px;margin:0 auto;display:grid;grid-template-columns:252px minmax(0,1fr);gap:28px;padding:26px 22px 90px}
+nav{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:6px}
+nav::-webkit-scrollbar{width:7px}nav::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+nav a{display:block;padding:6px 10px;font-size:13.2px;color:var(--tx2);text-decoration:none;border-radius:7px;border-left:2px solid transparent}
+nav a:hover{background:var(--bg2);color:var(--tx)}
+nav a.on{color:var(--am);border-left-color:var(--am);background:var(--bg2)}
+nav a i{float:right;font-style:normal;color:var(--tx3);font-size:11.5px;font-family:var(--mono)}
+.intro{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:30px}
+.intro h1{margin:0 0 8px;font-size:21px;letter-spacing:-.4px;font-weight:600}
+.intro p{margin:0 0 12px;color:var(--tx2);font-size:14.2px;max-width:92ch}
+.schema{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:9px;margin-top:16px}
+.st{background:var(--bg3);border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+.st b{display:block;font-family:var(--mono);font-size:12.7px;color:var(--te);font-weight:500;margin-bottom:3px}
+.st span{font-size:11.6px;color:var(--tx3);font-family:var(--mono);line-height:1.45;display:block}
+h2.cat{font-size:15.5px;font-weight:600;margin:40px 0 4px;padding-top:10px;letter-spacing:-.2px;scroll-margin-top:84px}
+h2.cat em{font-style:normal;color:var(--tx3);font-weight:400;font-family:var(--mono);font-size:12.5px;margin-left:9px}
+.catnote{color:var(--tx2);font-size:13.6px;margin:0 0 16px;max-width:95ch}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:13px;padding:17px 19px;margin-bottom:13px}
+.card:target{border-color:var(--am)}
+.ch{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;margin-bottom:9px}
+.nm{font-family:var(--mono);font-size:14.6px;color:var(--am);font-weight:500}
+.sig{font-family:var(--mono);font-size:12.2px;color:var(--tx3);word-break:break-word}
+.w{font-size:14.2px;margin:0 0 7px}
+.y{font-size:13.7px;color:var(--tx2);margin:0 0 12px}
+.y b{color:var(--vi);font-weight:500}
+pre{background:#090b0f;border:1px solid var(--line);border-radius:9px;padding:13px 15px;overflow-x:auto;margin:0;font-family:var(--mono);font-size:12.9px;line-height:1.72;color:#cfd6e4}
+pre::-webkit-scrollbar{height:8px}pre::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
+.sq{margin-top:9px;font-family:var(--mono);font-size:12.1px;color:var(--te);background:rgba(95,208,171,.07);border-left:2px solid var(--te);padding:8px 12px;overflow-x:auto;white-space:pre-wrap}
+.g{margin-top:9px;font-size:13.2px;color:#f3c08a;background:rgba(240,179,91,.08);border-left:2px solid var(--am);padding:8px 12px;border-radius:0}
+.g b{color:var(--am);font-weight:500}
+.k{color:var(--vi)}.s{color:var(--te)}.v{color:var(--bl)}.m{color:var(--am)}.c{color:#5b6477;font-style:italic}.n{color:#e0a3d8}
+.none{display:none}
+#empty{display:none;color:var(--tx3);font-size:14px;padding:30px 4px}
+footer{max-width:1500px;margin:0 auto;padding:0 22px 60px;color:var(--tx3);font-size:13px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr;padding:18px 14px 60px}nav{position:static;max-height:none;display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);padding-bottom:12px}nav a{border-left:none;border:1px solid var(--line);font-size:12.3px;padding:4px 9px}nav a i{display:none}}
+@media print{body{background:#fff;color:#000}nav,header{display:none}.card,.intro{break-inside:avoid;border-color:#ccc}pre{background:#f6f6f6;color:#111;border-color:#ddd}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <div class="brand">Eloquent <span>&amp;</span> Query Builder — revision sheet</div>
+  <input id="q" type="search" placeholder="Search a method, e.g. sync, whereHas, withCount, transaction…" autocomplete="off">
+  <div id="cnt"></div>
+</div></header>
+
+<div class="wrap">
+<nav id="nav"></nav>
+<main>
+  <div class="intro">
+    <h1>Every method, against one schema you already know</h1>
+    <p>Each entry answers four things: what the method does, why it exists, the implementation on the blog app's tables, and the trap that bites people. Every example uses the same nine tables from your project doc, so you never have to re-learn a toy schema.</p>
+    <p style="margin-bottom:0">Models assumed: <code style="font-family:var(--mono);color:var(--te)">User, Post, Category, Comment, Tag, Like, Bookmark, Follow</code>. Press <kbd style="font-family:var(--mono);background:var(--bg3);border:1px solid var(--line2);border-radius:5px;padding:1px 6px;font-size:12px">/</kbd> to jump to search.</p>
+    <div class="schema" id="schema"></div>
+  </div>
+  <div id="out"></div>
+  <div id="empty">No method matches that search. Try a shorter word — "sync", "where", "chunk", "cast".</div>
+</main>
+</div>
+<footer>Built as a revision companion for the React Native + Laravel blog app. Laravel 11/12 syntax. When a method behaves differently in an older version, the note says so.</footer>
+
+<script>
+const TABLES=[
+['users','id, name, email, password, bio, profile_image'],
+['categories','id, name, slug'],
+['posts','id, user_id, category_id, title, slug, excerpt, content, cover_image, status, published_at'],
+['comments','id, user_id, post_id, content'],
+['likes','id, user_id, post_id  — UNIQUE(user_id,post_id)'],
+['bookmarks','id, user_id, post_id  — UNIQUE(user_id,post_id)'],
+['follows','id, follower_id, following_id'],
+['tags','id, name, slug'],
+['post_tag','post_id, tag_id  (pivot)']
+];
+
+const CATS=[
+['Defining relationships','The map between tables. Everything else in this sheet depends on these being declared correctly.'],
+['Eager loading','The single biggest source of slow Laravel APIs. These methods decide how many queries your feed endpoint runs.'],
+['Counting &amp; aggregating relations','Getting like counts and comment counts without loading the rows themselves.'],
+['Many-to-many &amp; pivot','Everything for post_tag. sync() lives here.'],
+['Writing through relationships','Creating child rows without ever typing a foreign key by hand.'],
+['Querying by relationship','Filtering posts by facts about their comments, likes or author.'],
+['Retrieving records','The read methods, and which one throws instead of returning null.'],
+['Pagination &amp; chunking','Your infinite scroll, and how to touch 50,000 rows without exhausting memory.'],
+['Creating &amp; updating','Insert and update, including the atomic "find or make" family.'],
+['Deleting &amp; soft deletes','Hard delete, cascade, and the recoverable kind.'],
+['Where conditions','The filter vocabulary of the query builder.'],
+['Ordering, joins &amp; raw SQL','Sorting, grouping, joining, and the escape hatch to raw SQL.'],
+['Collections (in memory)','After the data has arrived. Powerful, but easy to misuse where SQL belonged.'],
+['Model state &amp; utilities','Inspecting and comparing a model instance.'],
+['Scopes','Naming a reusable where clause once instead of repeating it in ten controllers.'],
+['Casts, accessors &amp; mutators','Shaping an attribute on its way out of and into the database.'],
+['API resources &amp; serialization','The JSON contract your React Native app consumes.'],
+['Transactions &amp; locking','Making multi-table writes all-or-nothing, and surviving concurrency.'],
+['Model events &amp; observers','Side effects that fire automatically on save and delete.'],
+['Debugging &amp; performance guards','How to actually see the N+1 problem instead of guessing.'],
+['Caching','Storing expensive results, and the invalidation rule people forget.']
+];
+
+const M=[
+// ---------- 0 relationships ----------
+{c:0,n:'hasMany()',s:'hasMany(Related::class, foreignKey?, localKey?)',
+w:'Declares the "one" side of a one-to-many. A user has many posts.',
+y:'Without it you would write a manual where clause every time you need a user\'s posts. With it, the relationship is named once and reused everywhere — and becomes eligible for eager loading, counting and nested queries.',
+x:`class User extends Model
+{
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+        // assumes posts.user_id — pass 'author_id' as 2nd arg if named differently
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+}
+
+$user->posts;     // Collection of Post models (runs a query)
+$user->posts();   // HasMany builder (no query yet — chainable)`,
+g:'<b>Property vs method.</b> $user->posts runs the query and caches the result on the model. $user->posts() returns a query builder you can keep chaining: $user->posts()->where("status","published")->count().'},
+
+{c:0,n:'belongsTo()',s:'belongsTo(Related::class, foreignKey?, ownerKey?)',
+w:'Declares the "many" side — the table that physically holds the foreign key column.',
+y:'The rule of thumb: whichever table has the <b>_id column</b> gets belongsTo. posts.user_id lives in posts, so Post belongsTo User.',
+x:`class Post extends Model
+{
+    public function user()
+    {
+        return $this->belongsTo(User::class);   // posts.user_id -> users.id
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+}
+
+$post->user->name;   // "Priya"`,
+g:'<b>Naming.</b> Laravel guesses the key from the method name: a method called author() looks for author_id, not user_id. Either name the method user() or pass the key explicitly.'},
+
+{c:0,n:'hasOne()',s:'hasOne(Related::class, foreignKey?, localKey?)',
+w:'One-to-one. Same mechanics as hasMany but returns a single model instead of a collection.',
+y:'Use it when the child table will only ever hold one row per parent — a profile row, a settings row, a draft.',
+x:`class User extends Model
+{
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+}
+
+$user->profile?->twitter_handle;   // null-safe: profile may not exist`},
+
+{c:0,n:'belongsToMany()',s:'belongsToMany(Related::class, pivotTable?, foreignPivotKey?, relatedPivotKey?)',
+w:'Many-to-many through a pivot table. A post has many tags; a tag has many posts.',
+y:'This is the only relationship type that needs a third table. Laravel guesses the pivot name by alphabetising the two model names in snake singular: Post + Tag = <b>post_tag</b>. Name your pivot that way and you pass no arguments at all.',
+x:`class Post extends Model
+{
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);   // finds post_tag automatically
+    }
+}
+
+class Tag extends Model
+{
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class);  // the same pivot, read backwards
+    }
+}
+
+$post->tags;                 // Collection of Tag
+$tag->posts()->count();      // how many posts carry this tag`,
+g:'<b>Pivot naming.</b> It is post_tag, singular and alphabetical — not posts_tags, not tag_post. If you deviate, pass the table name as the second argument or the relationship silently finds nothing.'},
+
+{c:0,n:'hasManyThrough()',s:'hasManyThrough(Far::class, Through::class)',
+w:'Reaches a table two hops away through an intermediate model.',
+y:'A category has posts, and posts have comments — so a category has comments "through" posts. Saves you a manual join.',
+x:`class Category extends Model
+{
+    public function comments()
+    {
+        return $this->hasManyThrough(Comment::class, Post::class);
+        // categories.id -> posts.category_id, posts.id -> comments.post_id
+    }
+}
+
+Category::find(2)->comments()->count();   // all comments on all Tech posts`},
+
+{c:0,n:'Self-referencing belongsToMany()',s:'follows table — users to users',
+w:'The follow system: both sides of the relationship are the same table, so you must name every key explicitly.',
+y:'Laravel cannot guess keys when both models are User. You tell it which column means "me" and which means "them" — and the direction flips between the two methods.',
+x:`class User extends Model
+{
+    // people I follow
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')
+                    ->withTimestamps();
+    }
+
+    // people who follow me
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')
+                    ->withTimestamps();
+    }
+}
+
+$ravi->following()->count();   // 1
+$priya->followers;             // [Ravi]`,
+g:'<b>The only difference</b> between the two methods is the order of the last two arguments. Getting them backwards is the classic bug — your followers list shows the wrong people and nothing errors.'},
+
+{c:0,n:'morphMany() / morphTo()',s:'polymorphic relations',
+w:'Lets one child table belong to several different parent types.',
+y:'If later you want comments on both posts <b>and</b> other comments (threaded replies), polymorphic saves you from a second comments table. Not needed for phase 11 — know it exists.',
+x:`// comments table gains: commentable_id, commentable_type
+class Comment extends Model
+{
+    public function commentable() { return $this->morphTo(); }
+}
+
+class Post extends Model
+{
+    public function comments() { return $this->morphMany(Comment::class, 'commentable'); }
+}`,
+g:'<b>Cost.</b> Polymorphic columns cannot have a real foreign key constraint, so the database can no longer protect you from orphan rows. For your blog, plain post_id is the better choice.'},
+
+{c:0,n:'withDefault()',s:'belongsTo(...)->withDefault()',
+w:'Returns an empty model instead of null when the parent is missing.',
+y:'Kills a whole class of "Attempt to read property on null" crashes in your API resources when an author row was deleted.',
+x:`public function user()
+{
+    return $this->belongsTo(User::class)->withDefault([
+        'name' => 'Deleted user',
+    ]);
+}
+
+$post->user->name;   // "Deleted user" instead of a fatal error`},
+
+{c:0,n:'latestOfMany() / oldestOfMany()',s:'hasOne(...)->latestOfMany()',
+w:'Turns a has-many into a has-one that picks the newest (or oldest) related row.',
+y:'For a profile screen showing each user with just their most recent post, this is one clean eager-loadable relation instead of loading all posts and discarding most of them.',
+x:`public function latestPost()
+{
+    return $this->hasOne(Post::class)->latestOfMany();
+}
+
+User::with('latestPost')->get();`},
+
+// ---------- 1 eager loading ----------
+{c:1,n:'with()',s:'with(...$relations)',
+w:'Eager loads relationships <b>before</b> you loop — turning N+1 queries into 2.',
+y:'This is the single most important method in the sheet. Your home feed loads 20 posts; touching $post->user inside the loop fires 20 extra queries. with() collects all the user_ids first and fetches every author in one IN query.',
+x:`// BAD — 1 + 20 + 20 = 41 queries
+$posts = Post::latest()->take(20)->get();
+foreach ($posts as $post) {
+    echo $post->user->name;        // query per post
+    echo $post->category->name;    // query per post
+}
+
+// GOOD — 3 queries total
+$posts = Post::with(['user', 'category'])->latest()->take(20)->get();`,
+q:`select * from posts order by created_at desc limit 20
+select * from users where id in (2, 5, 7, 9)
+select * from categories where id in (1, 2)`,
+g:'<b>with() does not join.</b> It runs a separate query per relation and stitches the results in PHP. So you cannot order or filter the parent by a with()-ed column — use whereHas() or a join for that.'},
+
+{c:1,n:'with() — nested',s:'with(\'posts.comments.user\')',
+w:'Eager loads relationships of relationships using dot notation.',
+y:'A post details screen needs the post, its author, its comments, and each comment\'s author. Dot notation fetches that whole tree in a fixed number of queries no matter how many comments exist.',
+x:`$post = Post::with([
+    'user',
+    'category',
+    'tags',
+    'comments.user',        // comments, and each comment's author
+])->findOrFail($id);`,
+q:`4 queries for comments.user: posts, users, comments, users(again, for commenters)`},
+
+{c:1,n:'with() — constrained',s:'with([\'rel\' => fn($q) => ...])',
+w:'Eager loads a relationship but limits or sorts what comes back.',
+y:'You rarely want <b>all</b> comments eager loaded. A closure lets you take the newest three for a preview card, or load only published posts for an author profile.',
+x:`$posts = Post::with([
+    'comments' => fn ($q) => $q->latest()->limit(3),
+    'user:id,name,profile_image',          // column subset — id is mandatory
+])->paginate(15);`,
+g:'<b>Always include the foreign key</b> in a column subset. with("user:name") returns nulls because Laravel needs users.id to match rows back to posts.'},
+
+{c:1,n:'load()',s:'$model->load(...$relations)',
+w:'Eager loads onto models you have <b>already</b> fetched. Lazy eager loading.',
+y:'Use it when the decision to load is conditional. You fetch a post, then only load comments if the request asked for them — with() would have forced the choice before the query ran.',
+x:`$post = Post::findOrFail($id);
+
+if ($request->boolean('include_comments')) {
+    $post->load('comments.user');
+}
+
+// also works on a collection
+$posts = Post::latest()->get();
+$posts->load('tags');      // one extra pair of queries for the whole collection`,
+g:'<b>load() refetches</b> every time you call it, even if the relation is already loaded. Inside a loop that is an N+1 by another name.'},
+
+{c:1,n:'loadMissing()',s:'$model->loadMissing(...$relations)',
+w:'Same as load(), but skips relations already in memory.',
+y:'The safe version for shared code — a helper or API resource that cannot know whether the controller already eager loaded. Idempotent.',
+x:`public function toArray($request)
+{
+    $this->resource->loadMissing('user');   // no query if controller used with('user')
+    return [...];
+}`},
+
+{c:1,n:'withOnly()',s:'withOnly(...$relations)',
+w:'Replaces any relations the model is configured to always load, loading only these.',
+y:'If a model sets protected $with = ["user"], withOnly() lets one endpoint opt out of that default without editing the model.',
+x:`class Post extends Model {
+    protected $with = ['user'];   // every Post query loads the author
+}
+
+Post::withOnly('category')->get();   // author NOT loaded here`},
+
+{c:1,n:'without()',s:'without(...$relations)',
+w:'Cancels a default eager load for this query only.',
+y:'Lighter payloads for list endpoints where you only need titles. Pairs with $with on the model.',
+x:`Post::without('user')->select('id', 'title')->get();`},
+
+{c:1,n:'$with property',s:'protected $with = [...]',
+w:'Relations eager loaded automatically on every query for that model.',
+y:'Convenient for a relation you genuinely always need — but it is a tax on every query, including ones that do not need it.',
+x:`class Comment extends Model
+{
+    protected $with = ['user'];   // a comment is useless without its author
+}`,
+g:'<b>Use sparingly.</b> A $with on Post that loads comments means your lightweight search endpoint silently drags thousands of comment rows along.'},
+
+{c:1,n:'preventLazyLoading()',s:'Model::preventLazyLoading(!app()->isProduction())',
+w:'Throws an exception whenever a relation is accessed without being eager loaded.',
+y:'This is how you <b>find</b> N+1 problems instead of hoping to notice them. In local development, any accidental lazy load crashes loudly; in production it stays off.',
+x:`// app/Providers/AppServiceProvider.php
+public function boot(): void
+{
+    Model::preventLazyLoading(! $this->app->isProduction());
+}
+
+// Now this throws LazyLoadingViolationException in local:
+Post::all()->each(fn ($p) => $p->user->name);`,
+g:'<b>Turn this on in Phase 2</b>, not Phase 14. It makes the N+1 exercise in your doc automatic rather than something you have to remember to look for.'},
+
+// ---------- 2 counts ----------
+{c:2,n:'withCount()',s:'withCount(...$relations)',
+w:'Adds a {relation}_count column via a SQL subquery, without loading the related rows.',
+y:'Your feed needs "42 likes, 7 comments" — it does not need the 42 like rows. withCount counts in the database and returns a single integer per post. Loading the rows just to call count() on them is the classic beginner mistake.',
+x:`$posts = Post::withCount(['likes', 'comments', 'bookmarks'])
+             ->with('user')
+             ->latest()
+             ->paginate(15);
+
+$posts[0]->likes_count;      // 42  (integer, not a Collection)
+$posts[0]->comments_count;   // 7`,
+q:`select posts.*,
+  (select count(*) from likes where likes.post_id = posts.id) as likes_count,
+  (select count(*) from comments where comments.post_id = posts.id) as comments_count
+from posts order by created_at desc limit 15`,
+g:'<b>You can order by it:</b> ->withCount("likes")->orderByDesc("likes_count") gives you a trending feed in one query.'},
+
+{c:2,n:'withCount() — constrained &amp; aliased',s:'withCount([\'rel as alias\' => fn($q)])',
+w:'Counts only rows matching a condition, under a name you choose.',
+y:'Lets a single query return several different counts of the same relation — total comments versus comments this week.',
+x:`User::withCount([
+    'posts',
+    'posts as published_count' => fn ($q) => $q->where('status', 'published'),
+    'posts as draft_count'     => fn ($q) => $q->where('status', 'draft'),
+])->get();
+
+$user->published_count;   // 12`},
+
+{c:2,n:'loadCount()',s:'$model->loadCount(...$relations)',
+w:'withCount for models already in memory.',
+y:'Same relationship to withCount as load() has to with().',
+x:`$post = Post::findOrFail($id);
+$post->loadCount('likes', 'comments');`},
+
+{c:2,n:'withSum() / withAvg() / withMax() / withMin()',s:'withSum(\'relation\', \'column\')',
+w:'Other aggregates over a relationship, same subquery mechanism as withCount.',
+y:'Not heavily used in a blog, but the pattern matters: any aggregate can be computed in the parent query rather than in PHP.',
+x:`Post::withAvg('ratings', 'score')->get();   // $post->ratings_avg_score
+User::withMax('posts', 'published_at')->get(); // $user->posts_max_published_at`},
+
+{c:2,n:'withExists()',s:'withExists(...$relations)',
+w:'Adds a boolean {relation}_exists column instead of a count.',
+y:'Cheaper than a count when you only need yes/no. The database can stop at the first matching row.',
+x:`Post::withExists('comments')->get();
+$post->comments_exists;   // true / false`},
+
+{c:2,n:'The "did I like this?" pattern',s:'withExists + constrained relation',
+w:'Marks each post in a feed with whether the <b>current</b> user has liked and bookmarked it.',
+y:'Your React Native heart icon needs this per post. Doing it in PHP means a query per post; this does the whole page in the one feed query.',
+x:`$uid = $request->user()->id;
+
+$posts = Post::with('user')
+    ->withCount('likes')
+    ->withExists([
+        'likes as is_liked'       => fn ($q) => $q->where('user_id', $uid),
+        'bookmarks as is_saved'   => fn ($q) => $q->where('user_id', $uid),
+    ])
+    ->latest()
+    ->paginate(15);
+
+$posts[0]->is_liked;   // true`,
+g:'<b>This is the home feed query</b> from the exercise at the end of our last chat. Add ->with("category") and you have the whole card.'},
+
+// ---------- 3 pivot ----------
+{c:3,n:'attach()',s:'attach($id | array, $pivotData = [])',
+w:'Inserts rows into the pivot table. Adds tags to a post.',
+y:'The low-level "add a link" operation. It never removes anything and never checks for duplicates.',
+x:`$post->tags()->attach(3);                     // one tag
+$post->tags()->attach([3, 7, 9]);             // several
+
+// with extra pivot columns
+$post->tags()->attach(3, ['added_by' => auth()->id()]);`,
+q:`insert into post_tag (post_id, tag_id) values (1, 3)`,
+g:'<b>Attaching twice creates a duplicate row</b> unless the pivot has a unique index. Either add UNIQUE(post_id, tag_id) in the migration or use syncWithoutDetaching().'},
+
+{c:3,n:'detach()',s:'detach($id | array | null)',
+w:'Deletes pivot rows. With no argument, removes <b>all</b> of them.',
+y:'Removing a tag from a post is a pivot delete, not a model delete — the tag itself survives for other posts.',
+x:`$post->tags()->detach(3);        // remove one tag link
+$post->tags()->detach([3, 7]);   // remove several
+$post->tags()->detach();         // remove ALL tags from this post`,
+g:'<b>detach() with no argument</b> is easy to trigger accidentally from a variable that turned out to be null. $post->tags()->detach($maybeNull) wipes every tag.'},
+
+{c:3,n:'sync()',s:'sync(array $ids, $detaching = true)',
+w:'Makes the pivot table match the array exactly — attaches what is missing, detaches what is not in the list, leaves the rest untouched.',
+y:'This is the edit-form method. When a user edits a post and submits tags [2, 5], you do not want to work out which tags were added and which removed. sync() diffs it for you, and only touches the rows that actually changed.',
+x:`// post currently has tags 1 and 2
+$post->tags()->sync([2, 5]);
+// result: tag 1 detached, tag 2 untouched, tag 5 attached
+
+$result = $post->tags()->sync([2, 5]);
+// ['attached' => [5], 'detached' => [1], 'updated' => []]
+
+// with pivot data per id
+$post->tags()->sync([
+    2 => ['added_by' => 1],
+    5 => ['added_by' => 1],
+]);`,
+q:`delete from post_tag where post_id = 1 and tag_id in (1)
+insert into post_tag (post_id, tag_id) values (1, 5)
+-- tag 2 generates no query at all`,
+g:'<b>Why not detach-then-attach?</b> That deletes and reinserts every row, destroying pivot timestamps and any extra pivot data on unchanged rows — and it touches rows that did not need touching. sync() is both safer and cheaper.'},
+
+{c:3,n:'syncWithoutDetaching()',s:'syncWithoutDetaching(array $ids)',
+w:'Attaches the missing ids but never removes anything. Equivalent to sync($ids, false).',
+y:'The idempotent "add these" — safe to call repeatedly, no duplicates, nothing lost. Use it when you are adding to a set rather than replacing it.',
+x:`$post->tags()->syncWithoutDetaching([5, 9]);
+// existing tags stay; 5 and 9 added only if absent`},
+
+{c:3,n:'toggle()',s:'toggle($id | array)',
+w:'Attaches ids that are absent and detaches ids that are present.',
+y:'Exactly the semantics of a tag chip the user taps on and off in the editor.',
+x:`$post->tags()->toggle([2, 5]);
+// 2 was attached -> now removed; 5 was absent -> now added`,
+g:'<b>Not for likes.</b> A like toggle over HTTP should be two explicit endpoints (POST and DELETE) — if the network retries a toggle request, the user ends up un-liking what they liked.'},
+
+{c:3,n:'updateExistingPivot()',s:'updateExistingPivot($id, array $attributes)',
+w:'Updates columns on an existing pivot row without re-creating it.',
+y:'The only clean way to change pivot metadata. attach() would duplicate; sync() would rewrite.',
+x:`$post->tags()->updateExistingPivot(3, ['is_primary' => true]);`},
+
+{c:3,n:'withPivot() / withTimestamps()',s:'belongsToMany(...)->withPivot(\'col\')',
+w:'Makes extra pivot columns readable on the loaded model, and maintains created_at/updated_at on the pivot.',
+y:'By default only the two key columns come back. If post_tag carries added_by or a sort order, you must declare it or it is invisible.',
+x:`public function tags()
+{
+    return $this->belongsToMany(Tag::class)
+                ->withPivot('added_by', 'sort_order')
+                ->withTimestamps();
+}
+
+foreach ($post->tags as $tag) {
+    echo $tag->pivot->sort_order;
+    echo $tag->pivot->created_at;
+}`},
+
+{c:3,n:'wherePivot() / wherePivotIn()',s:'wherePivot($column, $value)',
+w:'Filters the relationship by a pivot column.',
+y:'Lets you define a narrower relationship on top of the same pivot table.',
+x:`public function primaryTags()
+{
+    return $this->belongsToMany(Tag::class)
+                ->wherePivot('is_primary', true);
+}`},
+
+{c:3,n:'as()',s:'belongsToMany(...)->as(\'membership\')',
+w:'Renames the ->pivot accessor to something that reads better.',
+y:'Pure readability. $tag->pivot->added_by is vague; $tag->tagging->added_by says what it is.',
+x:`return $this->belongsToMany(Tag::class)->as('tagging')->withPivot('added_by');
+
+$tag->tagging->added_by;`},
+
+// ---------- 4 writing through relationships ----------
+{c:4,n:'create() on a relation',s:'$parent->relation()->create(array $attributes)',
+w:'Creates a child row with the foreign key filled in automatically.',
+y:'You never type user_id yourself, so you can never accidentally accept it from the request body — which is exactly the "do not trust the mobile app" rule in your security section.',
+x:`// SAFE — user_id comes from the authenticated user, not the payload
+$post = $request->user()->posts()->create([
+    'category_id' => $request->category_id,
+    'title'       => $request->title,
+    'content'     => $request->content,
+    'status'      => 'published',
+]);
+
+// DANGEROUS — a crafted request could post as someone else
+$post = Post::create($request->all());`,
+g:'<b>This pattern alone</b> prevents the most common authorization hole in a learning project.'},
+
+{c:4,n:'save() on a relation',s:'$parent->relation()->save($model)',
+w:'Same as create(), but you hand it an existing model instance instead of an array.',
+y:'Useful when the child was built elsewhere — from a factory, a job, or after custom validation.',
+x:`$comment = new Comment(['content' => $request->content]);
+$post->comments()->save($comment);
+
+$post->comments()->saveMany([$c1, $c2]);`},
+
+{c:4,n:'createMany()',s:'$parent->relation()->createMany(array $rows)',
+w:'Creates several children in one call.',
+y:'Mostly for seeders and factories — building a user with twenty posts to test your FlatList.',
+x:`$user->posts()->createMany([
+    ['title' => 'First',  'category_id' => 1, 'content' => '...'],
+    ['title' => 'Second', 'category_id' => 2, 'content' => '...'],
+]);`,
+g:'<b>Not a bulk insert.</b> It loops and runs one INSERT per row so model events fire. For thousands of rows use insert() or upsert().'},
+
+{c:4,n:'associate() / dissociate()',s:'$child->relation()->associate($parent)',
+w:'Sets or clears the foreign key on a belongsTo side.',
+y:'The belongsTo counterpart of save(). Moving a post to a different category reads better as associate() than as assigning category_id by hand.',
+x:`$post->category()->associate($techCategory);
+$post->save();
+
+$post->category()->dissociate();   // sets category_id = null
+$post->save();`,
+g:'<b>associate() does not save.</b> It only sets the attribute in memory — you must call save() afterwards.'},
+
+{c:4,n:'push()',s:'$model->push()',
+w:'Saves the model <b>and</b> every relationship currently loaded on it.',
+y:'Convenient for a deeply nested in-memory edit. Rare in API code, handy in tinker.',
+x:`$post->title = 'Updated';
+$post->user->bio = 'New bio';
+$post->push();     // saves both post and user`},
+
+{c:4,n:'firstOrCreate() on a relation',s:'$parent->relation()->firstOrCreate([...])',
+w:'Finds a matching child or creates it.',
+y:'Tag input is the real use case: the user types "react-native" and you must not create a second tag row if it already exists.',
+x:`$tagIds = collect($request->tags)->map(function ($name) {
+    return Tag::firstOrCreate(
+        ['slug' => Str::slug($name)],
+        ['name' => $name]
+    )->id;
+});
+
+$post->tags()->sync($tagIds);`,
+g:'<b>This is the full tag-saving flow</b> for your create/edit post screen: normalise names to tags, then sync the ids.'},
+
+// ---------- 5 querying by relationship ----------
+{c:5,n:'has()',s:'has(\'relation\', $operator?, $count?)',
+w:'Keeps only parents that have at least one (or N) related rows.',
+y:'Filtering by the existence of children, done as a SQL EXISTS subquery rather than by loading and filtering in PHP.',
+x:`Post::has('comments')->get();              // posts with any comment
+Post::has('likes', '>=', 10)->get();       // posts with 10+ likes
+User::has('posts.comments')->get();        // users whose posts got comments`,
+q:`select * from posts where exists (
+  select * from comments where comments.post_id = posts.id
+)`},
+
+{c:5,n:'doesntHave()',s:'doesntHave(\'relation\')',
+w:'The inverse — parents with no related rows.',
+y:'Finding empty categories, silent users, posts nobody engaged with.',
+x:`Category::doesntHave('posts')->get();   // empty categories to hide in Explore
+Post::doesntHave('comments')->get();`},
+
+{c:5,n:'whereHas()',s:'whereHas(\'relation\', fn($q) => ...)',
+w:'has() with a condition on the related rows.',
+y:'The workhorse for search and filtering across tables. "Posts commented on by this user", "posts tagged react-native".',
+x:`// posts carrying a specific tag
+Post::whereHas('tags', fn ($q) => $q->where('slug', 'react-native'))
+    ->with('user')
+    ->paginate(15);
+
+// posts whose author is verified
+Post::whereHas('user', fn ($q) => $q->whereNotNull('email_verified_at'))->get();`,
+g:'<b>Performance.</b> whereHas runs a correlated subquery. On big tables it needs an index on the child foreign key — exactly the evidence-driven indexing in your Phase 14.'},
+
+{c:5,n:'whereDoesntHave()',s:'whereDoesntHave(\'relation\', fn($q) => ...)',
+w:'Parents with no related row matching the condition.',
+y:'Reads as a negative filter: show me posts I have not yet liked.',
+x:`Post::whereDoesntHave('likes', fn ($q) => $q->where('user_id', auth()->id()))
+    ->latest()
+    ->get();`},
+
+{c:5,n:'withWhereHas()',s:'withWhereHas(\'relation\', fn($q) => ...)',
+w:'Filters parents by the relation <b>and</b> eager loads only the matching children.',
+y:'Without it you write the same condition twice — once in whereHas and once in the with() closure — and they drift apart when you edit one.',
+x:`// authors who have published posts, loading only their published posts
+User::withWhereHas('posts', fn ($q) => $q->where('status', 'published'))->get();`},
+
+{c:5,n:'whereRelation()',s:'whereRelation(\'relation\', \'column\', $op, $value)',
+w:'Shorthand for a single-condition whereHas.',
+y:'Less nesting for the common case. Same SQL.',
+x:`Post::whereRelation('category', 'slug', 'tech')->get();
+
+// identical to:
+Post::whereHas('category', fn ($q) => $q->where('slug', 'tech'))->get();`},
+
+{c:5,n:'whereBelongsTo()',s:'whereBelongsTo($model, $relation?)',
+w:'Filters by a parent model instance without naming the foreign key.',
+y:'Expresses intent better than ->where("user_id", $user->id) and survives a column rename.',
+x:`Post::whereBelongsTo($user)->latest()->get();
+Post::whereBelongsTo($category)->get();`},
+
+{c:5,n:'has() with aggregate ordering',s:'withCount + orderBy',
+w:'Combining existence filtering with count ordering for a trending feed.',
+y:'Shows how these compose: filter by relation, count a relation, sort by that count — all in one query, no PHP sorting.',
+x:`Post::where('status', 'published')
+    ->whereHas('likes')
+    ->withCount('likes')
+    ->orderByDesc('likes_count')
+    ->take(10)
+    ->get();`},
+
+// ---------- 6 retrieving ----------
+{c:6,n:'all()',s:'Model::all($columns = [\'*\'])',
+w:'Every row in the table as a Collection.',
+y:'Fine for categories (there are eight). Dangerous for posts.',
+x:`Category::all();                 // fine
+Category::all(['id', 'name']);   // lighter`,
+g:'<b>Never call all() on a growing table.</b> It loads every row into memory. Use paginate() or chunk().'},
+
+{c:6,n:'find() / findOrFail()',s:'find($id) | findOrFail($id)',
+w:'Fetch by primary key. find returns null if missing; findOrFail throws ModelNotFoundException.',
+y:'In a controller, findOrFail is almost always right — Laravel converts the exception into a clean 404 JSON response, which is exactly the "Not found 404" row in your error-state table.',
+x:`$post = Post::findOrFail($id);       // auto 404 for the mobile app
+$post = Post::find($id);             // null — you must handle it yourself
+
+Post::findMany([1, 2, 3]);           // several ids
+Post::findOr($id, fn () => abort(410));`,
+q:`select * from posts where id = 7 limit 1`},
+
+{c:6,n:'first() / firstOrFail() / sole()',s:'first() | firstOrFail() | sole()',
+w:'The first row matching the query. sole() throws if there is not exactly one.',
+y:'sole() is an assertion: use it where duplicates would mean your data is corrupt, such as looking up a user by email.',
+x:`User::where('email', $email)->firstOrFail();
+Post::where('slug', $slug)->firstOrFail();      // slug lookups for deep links
+User::where('email', $email)->sole();           // throws if 2 rows exist`},
+
+{c:6,n:'firstWhere()',s:'firstWhere($column, $value)',
+w:'Shorthand for where(...)->first().',
+y:'Slightly shorter for one-condition lookups.',
+x:`Category::firstWhere('slug', 'tech');`},
+
+{c:6,n:'value() / pluck()',s:'value($column) | pluck($column, $key?)',
+w:'value returns one column of one row; pluck returns one column from many rows.',
+y:'Avoids hydrating whole models when you need a single string or a list of ids. Meaningfully faster on large sets.',
+x:`Post::where('id', 7)->value('title');            // "Why FlatList is fast"
+
+Tag::pluck('name', 'id');
+// [1 => 'react-native', 2 => 'performance']
+
+$likedIds = Like::where('user_id', $uid)->pluck('post_id')->all();`},
+
+{c:6,n:'get()',s:'get($columns = [\'*\'])',
+w:'Runs the query and returns a Collection of models.',
+y:'The terminal method. Everything before it is just building the query — nothing hits the database until get(), first(), count() or paginate() is called.',
+x:`$query = Post::where('status', 'published');   // no query yet
+$query->orderBy('published_at', 'desc');       // still no query
+$posts = $query->get();                        // NOW it runs`},
+
+{c:6,n:'exists() / doesntExist()',s:'exists() | doesntExist()',
+w:'Boolean check without fetching rows.',
+y:'Cheaper than count() > 0 because the database stops at the first match. Use it for duplicate-like checks before inserting.',
+x:`$alreadyLiked = Like::where('user_id', $uid)
+                    ->where('post_id', $postId)
+                    ->exists();`,
+g:'<b>Not a substitute for a unique index.</b> Between your exists() check and the insert, another request can slip in. Keep UNIQUE(user_id, post_id) as the real guarantee.'},
+
+{c:6,n:'count() / sum() / avg() / max() / min()',s:'aggregates',
+w:'Aggregate directly in SQL.',
+y:'Post::count() asks the database for one number. Post::all()->count() downloads every row first. The difference on 50,000 posts is seconds versus milliseconds.',
+x:`Post::where('status', 'published')->count();
+Like::where('post_id', $id)->count();
+Comment::whereDate('created_at', today())->count();`,
+g:'<b>The classic mistake:</b> $post->comments->count() loads every comment row. $post->comments()->count() runs a COUNT query. One character, very different cost.'},
+
+// ---------- 7 pagination ----------
+{c:7,n:'paginate()',s:'paginate($perPage, $columns, $pageName, $page)',
+w:'Page of results plus total count and page metadata.',
+y:'Phase 6 of your plan. The JSON includes current_page, last_page and total — which is how the mobile app knows whether hasMore is still true.',
+x:`$posts = Post::with('user')
+             ->withCount('likes')
+             ->latest()
+             ->paginate(15);
+
+// JSON: data, current_page, last_page, per_page, total, next_page_url`,
+q:`select count(*) as aggregate from posts          -- the extra query
+select * from posts order by created_at desc limit 15 offset 30`,
+g:'<b>paginate() runs two queries</b> — one for the page, one for the total. That COUNT is what makes it slow on huge tables.'},
+
+{c:7,n:'simplePaginate()',s:'simplePaginate($perPage)',
+w:'Pagination without the total count — only "is there a next page".',
+y:'Drops the expensive COUNT query. For infinite scroll you never display "page 7 of 340", so the total is wasted work.',
+x:`$posts = Post::latest()->simplePaginate(15);
+// JSON has next_page_url but no total or last_page`,
+g:'<b>Your FlatList only needs to know whether more exists.</b> simplePaginate is usually the better fit for onEndReached.'},
+
+{c:7,n:'cursorPaginate()',s:'cursorPaginate($perPage)',
+w:'Pagination by an encoded cursor pointing at the last row, instead of an OFFSET.',
+y:'Fixes two real problems with offset paging in a live feed: OFFSET 10000 forces the database to count through 10,000 rows, and if someone publishes a post while the user is scrolling, every subsequent page shifts and the user sees a duplicate. Cursor paging has neither problem.',
+x:`$posts = Post::orderBy('id', 'desc')->cursorPaginate(15);
+// next_cursor: "eyJpZCI6MTI0fQ"`,
+q:`select * from posts where id < 124 order by id desc limit 15`,
+g:'<b>Trade-off:</b> no total count, no jumping to page 5, and the sort column must be unique and indexed. For an endless mobile feed that is a fine deal.'},
+
+{c:7,n:'chunk() / chunkById()',s:'chunk($size, fn($rows) => ...)',
+w:'Processes a big result set in batches, holding only one batch in memory.',
+y:'For backfills and reports. chunkById is the safer variant: if your callback modifies the rows you are iterating, plain chunk() skips records because the offsets shift underneath it.',
+x:`Post::where('status', 'draft')->chunkById(200, function ($posts) {
+    foreach ($posts as $post) {
+        $post->update(['status' => 'archived']);
+    }
+});`,
+g:'<b>Rule:</b> if the chunk callback writes to the same table, use chunkById. Always.'},
+
+{c:7,n:'lazy() / cursor()',s:'lazy($size) | cursor()',
+w:'Iterate row by row with a LazyCollection instead of a callback.',
+y:'Same memory benefit as chunk but reads like a normal foreach. cursor() keeps one database connection streaming; lazy() runs batched queries.',
+x:`foreach (Post::lazy(500) as $post) {
+    // one model in memory at a time
+}
+
+foreach (Post::cursor() as $post) {
+    // single streaming query
+}`},
+
+{c:7,n:'The onEndReached contract',s:'what the mobile app actually needs',
+w:'The response shape that drives your pagination state.',
+y:'Phase 6 depends on the API telling the client unambiguously whether to keep requesting. Decide this once and the FlatList logic stays trivial.',
+x:`return response()->json([
+    'success' => true,
+    'data'    => PostResource::collection($posts),
+    'meta'    => [
+        'current_page' => $posts->currentPage(),
+        'has_more'     => $posts->hasMorePages(),
+    ],
+]);`,
+g:'<b>Send has_more explicitly.</b> Letting the client infer it from an empty array means one wasted request at the end of every list.'},
+
+// ---------- 8 create/update ----------
+{c:8,n:'create()',s:'Model::create(array $attributes)',
+w:'Instantiates, fills and saves in one call. Returns the saved model.',
+y:'Only columns listed in $fillable are accepted — that is mass-assignment protection, and it is what stops a request body from setting is_admin or user_id.',
+x:`class Post extends Model
+{
+    protected $fillable = ['category_id', 'title', 'slug', 'excerpt',
+                           'content', 'cover_image', 'status', 'published_at'];
+    // user_id deliberately absent — it comes from the relationship
+}
+
+$post = Post::create($request->validated());`,
+g:'<b>Use $fillable, not $guarded = [].</b> An empty $guarded disables the protection entirely and is a security hole in an API that accepts JSON.'},
+
+{c:8,n:'save()',s:'$model->save()',
+w:'Persists a model. INSERT if new, UPDATE if it already exists.',
+y:'Laravel knows which by the exists flag on the instance, so you use one method for both.',
+x:`$post = new Post(['title' => 'Draft']);
+$post->user_id = auth()->id();
+$post->save();        // INSERT
+
+$post->title = 'Final title';
+$post->save();        // UPDATE — and only the changed column`,
+q:`update posts set title = 'Final title', updated_at = ... where id = 7`},
+
+{c:8,n:'update()',s:'$model->update(array) | Query::update(array)',
+w:'On a model: fill and save. On a query: a bulk UPDATE across many rows.',
+y:'The two forms behave very differently, and that difference matters.',
+x:`$post->update(['title' => 'New title']);              // one row, events fire
+
+Post::where('status', 'draft')
+    ->where('created_at', '<', now()->subYear())
+    ->update(['status' => 'archived']);                // many rows, ONE query`,
+g:'<b>Bulk update skips model events</b> and does not touch observers or the updated_at of unloaded models in the way you might expect. Fast, but silent.'},
+
+{c:8,n:'updateOrCreate()',s:'updateOrCreate(array $match, array $values)',
+w:'Finds by the first array, updates with the second, or creates with both merged.',
+y:'Idempotent writes. Safe when a mobile client retries a request after a flaky network — which your own testing strategy explicitly asks you to simulate.',
+x:`Like::updateOrCreate(
+    ['user_id' => $uid, 'post_id' => $postId],   // match
+    ['created_at' => now()]                      // set
+);`},
+
+{c:8,n:'firstOrCreate() / firstOrNew()',s:'firstOrCreate($match, $extra)',
+w:'firstOrCreate saves immediately; firstOrNew returns an unsaved instance.',
+y:'firstOrNew lets you inspect or modify before saving — useful when extra fields depend on whether it existed.',
+x:`$tag = Tag::firstOrCreate(['slug' => 'react-native'], ['name' => 'React Native']);
+
+$tag = Tag::firstOrNew(['slug' => $slug]);
+if (! $tag->exists) { $tag->name = $name; }
+$tag->save();`,
+g:'<b>Still a race.</b> Two simultaneous requests can both find nothing and both insert. The unique index on slug is what actually prevents the duplicate.'},
+
+{c:8,n:'upsert()',s:'upsert(array $rows, array $uniqueBy, array $update)',
+w:'Insert many rows, updating the ones that collide on a unique key. One query.',
+y:'The bulk version of updateOrCreate. For importing or syncing large batches it is dramatically faster than looping.',
+x:`Tag::upsert([
+    ['name' => 'React Native', 'slug' => 'react-native'],
+    ['name' => 'Laravel',      'slug' => 'laravel'],
+], uniqueBy: ['slug'], update: ['name']);`,
+g:'<b>Needs a real unique index</b> on the uniqueBy columns, and skips model events.'},
+
+{c:8,n:'increment() / decrement()',s:'increment($column, $amount = 1)',
+w:'Changes a numeric column atomically in the database.',
+y:'If you ever denormalise a likes_count onto posts, this is the only safe way to change it. Reading into PHP, adding one and saving loses updates under concurrency — two simultaneous likes both read 5 and both write 6.',
+x:`$post->increment('views_count');
+$post->decrement('likes_count', 1);
+Post::where('id', $id)->increment('views_count');`,
+q:`update posts set views_count = views_count + 1 where id = 7`},
+
+{c:8,n:'insert()',s:'DB/Model::insert(array $rows)',
+w:'Raw multi-row INSERT with no model instantiation.',
+y:'Fastest way to load seed data for your Phase 13 performance test. No events, no timestamps, no casts.',
+x:`DB::table('posts')->insert($tenThousandRows);`,
+g:'<b>You must supply created_at and updated_at yourself</b> — insert() does not fill them.'},
+
+{c:8,n:'replicate()',s:'$model->replicate(array $except = [])',
+w:'Copies a model into a new unsaved instance.',
+y:'A "duplicate post" feature, or forking a published post into a draft.',
+x:`$draft = $post->replicate(['published_at']);
+$draft->status = 'draft';
+$draft->save();`},
+
+{c:8,n:'touch()',s:'$model->touch() | $touches property',
+w:'Updates updated_at. The $touches property propagates that to parents.',
+y:'Keeps a parent\'s timestamp fresh when a child changes — so a post sorted by "recent activity" bubbles up when it gets a new comment.',
+x:`class Comment extends Model
+{
+    protected $touches = ['post'];   // new comment updates posts.updated_at
+}`},
+
+// ---------- 9 deleting ----------
+{c:9,n:'delete()',s:'$model->delete() | Query::delete()',
+w:'Deletes the row (or rows). Model events fire for the instance form.',
+y:'On a model it is a single DELETE by primary key; on a query it is a bulk delete.',
+x:`$post->delete();
+
+Post::where('status', 'draft')
+    ->where('created_at', '<', now()->subYears(2))
+    ->delete();`},
+
+{c:9,n:'destroy()',s:'Model::destroy($ids)',
+w:'Deletes by primary key without fetching first.',
+y:'Convenient for a bulk delete of known ids from the client.',
+x:`Post::destroy(5);
+Post::destroy([5, 9, 12]);`,
+g:'<b>destroy() loads each model</b> so events fire — it is not the fastest path, just the most convenient.'},
+
+{c:9,n:'ON DELETE CASCADE',s:'migration: ->constrained()->cascadeOnDelete()',
+w:'The database removes dependent rows automatically when a parent is deleted.',
+y:'This is what made step 15 of the dry run work. Without it, deleting a post with comments throws a foreign key error — the database refuses to orphan rows.',
+x:`Schema::create('comments', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('post_id')->constrained()->cascadeOnDelete();
+    $table->text('content');
+    $table->timestamps();
+});
+
+// categories should NOT cascade — deleting a category must not delete posts
+$table->foreignId('category_id')->constrained()->restrictOnDelete();`,
+g:'<b>Decide per foreign key:</b> cascadeOnDelete for owned children (comments, likes, bookmarks, post_tag), restrictOnDelete or nullOnDelete for shared references (category).'},
+
+{c:9,n:'SoftDeletes',s:'use SoftDeletes; + $table->softDeletes()',
+w:'delete() sets deleted_at instead of removing the row; all queries then exclude it automatically.',
+y:'Recoverable deletion. A user who deletes a post by mistake can be restored, and your moderation history survives.',
+x:`class Post extends Model
+{
+    use SoftDeletes;
+}
+
+// migration
+$table->softDeletes();
+
+$post->delete();        // update posts set deleted_at = now()
+Post::count();          // excludes it automatically`,
+q:`select * from posts where posts.deleted_at is null`},
+
+{c:9,n:'withTrashed() / onlyTrashed() / restore() / forceDelete()',s:'soft delete controls',
+w:'See, isolate, revive, or permanently destroy soft-deleted rows.',
+y:'The full lifecycle once SoftDeletes is on.',
+x:`Post::withTrashed()->find($id);      // ignore the deleted_at filter
+Post::onlyTrashed()->get();          // the recycle bin
+$post->restore();                    // deleted_at = null
+$post->forceDelete();                // real DELETE, triggers cascade
+$post->trashed();                    // bool`,
+g:'<b>Unique indexes and soft deletes conflict.</b> A soft-deleted post still occupies its slug. Either include deleted_at in the unique index or append a suffix on delete.'},
+
+{c:9,n:'truncate()',s:'Model::truncate()',
+w:'Empties the table and resets auto-increment.',
+y:'Seeder and local-reset territory only.',
+x:`Post::truncate();`,
+g:'<b>Cannot be rolled back</b> inside a transaction on MySQL, and ignores foreign keys in ways that can leave orphans. Never expose it through a route.'},
+
+// ---------- 10 where ----------
+{c:10,n:'where() / orWhere()',s:'where($col, $op?, $val) | where(fn($q))',
+w:'The basic condition. A closure creates a parenthesised group.',
+y:'Grouping matters more than people expect: mixing where and orWhere without a closure produces wrong results because SQL binds AND tighter than OR.',
+x:`Post::where('status', 'published')
+    ->where(function ($q) {
+        $q->where('title', 'like', "%$term%")
+          ->orWhere('content', 'like', "%$term%");
+    })
+    ->get();`,
+q:`where status = 'published' and (title like ? or content like ?)`,
+g:'<b>Without the closure</b> you get: status = published AND title like ? OR content like ? — which returns every post whose content matches, published or not.'},
+
+{c:10,n:'whereIn() / whereNotIn()',s:'whereIn($column, array|Closure)',
+w:'Matches against a list or a subquery.',
+y:'The natural way to fetch "posts from people I follow" once you have the id list.',
+x:`$ids = auth()->user()->following()->pluck('users.id');
+Post::whereIn('user_id', $ids)->latest()->paginate(15);
+
+// as a subquery — one round trip instead of two
+Post::whereIn('user_id', fn ($q) =>
+    $q->select('following_id')->from('follows')->where('follower_id', $uid)
+)->get();`,
+g:'<b>Huge IN lists are slow.</b> Past a few thousand ids, prefer the subquery or a join.'},
+
+{c:10,n:'whereBetween() / whereNotBetween()',s:'whereBetween($col, [$a, $b])',
+w:'Inclusive range.',
+y:'Date ranges for analytics screens.',
+x:`Post::whereBetween('published_at', [now()->subWeek(), now()])->get();`},
+
+{c:10,n:'whereNull() / whereNotNull()',s:'whereNull($column)',
+w:'NULL comparison — the one thing = cannot do in SQL.',
+y:'where("published_at", null) does not work in raw SQL terms; NULL is never equal to anything, including itself.',
+x:`Post::whereNull('published_at')->get();     // unpublished drafts
+Post::whereNotNull('cover_image')->get();`},
+
+{c:10,n:'whereDate() / whereMonth() / whereYear() / whereTime()',s:'whereDate($col, $date)',
+w:'Compares only part of a datetime.',
+y:'"Posts from today" fails with a plain = because created_at carries a time component.',
+x:`Comment::whereDate('created_at', today())->count();
+Post::whereYear('published_at', 2026)->count();`,
+g:'<b>These prevent index use</b> because the column is wrapped in a function. For hot queries use a range instead: whereBetween("created_at", [$start, $end]).'},
+
+{c:10,n:'whereColumn()',s:'whereColumn($first, $op, $second)',
+w:'Compares two columns of the same row.',
+y:'The only clean way to say "edited after publishing".',
+x:`Post::whereColumn('updated_at', '>', 'published_at')->get();`},
+
+{c:10,n:'when()',s:'when($condition, fn($q), fn($q)?)',
+w:'Applies query clauses only if a condition is truthy.',
+y:'Kills the if-ladder in filter endpoints. Your Explore screen sends optional category, tag and search params; when() handles each without branching the query into four versions.',
+x:`$posts = Post::query()
+    ->when($request->category, fn ($q, $slug) =>
+        $q->whereRelation('category', 'slug', $slug))
+    ->when($request->q, fn ($q, $term) =>
+        $q->where('title', 'like', "%$term%"))
+    ->when($request->sort === 'popular',
+        fn ($q) => $q->withCount('likes')->orderByDesc('likes_count'),
+        fn ($q) => $q->latest())
+    ->paginate(15);`,
+g:'<b>The matched value is passed in</b> as the closure\'s second argument, so you do not repeat $request->category inside.'},
+
+{c:10,n:'whereAny() / whereAll()',s:'whereAny(array $columns, $op, $value)',
+w:'Applies the same condition across several columns, OR-ed or AND-ed. Laravel 10.47+.',
+y:'Exactly your search endpoint, without the manual closure group.',
+x:`Post::whereAny(['title', 'excerpt', 'content'], 'like', "%$term%")
+    ->where('status', 'published')
+    ->get();`},
+
+{c:10,n:'whereLike()',s:'whereLike($col, $value, $caseSensitive = false)',
+w:'Explicit LIKE with a case-sensitivity flag. Laravel 11.x+.',
+y:'Makes case behaviour explicit instead of depending on the database collation.',
+x:`Post::whereLike('title', "%$term%")->get();`,
+g:'<b>Leading wildcards cannot use an index.</b> "%term%" scans the table. Past a few thousand posts, move to MySQL FULLTEXT or Meilisearch via Laravel Scout.'},
+
+{c:10,n:'whereExists()',s:'whereExists(fn($q) => ...)',
+w:'Raw EXISTS subquery.',
+y:'What whereHas compiles down to. Useful when the subquery does not map to a declared relationship.',
+x:`Post::whereExists(fn ($q) =>
+    $q->select(DB::raw(1))->from('likes')
+      ->whereColumn('likes.post_id', 'posts.id')
+      ->where('likes.user_id', $uid)
+)->get();`},
+
+// ---------- 11 ordering joins raw ----------
+{c:11,n:'orderBy() / latest() / oldest()',s:'orderBy($col, $dir) | latest($col)',
+w:'Sorting. latest() is orderBy(created_at, desc).',
+y:'Your feed sorts by published_at, not created_at — so pass the column.',
+x:`Post::latest('published_at')->get();
+Post::orderBy('title')->orderByDesc('published_at')->get();
+Post::reorder()->orderBy('id')->get();    // clear previous sorts`,
+g:'<b>Always sort by an indexed column</b> that is also unique enough — a tie on published_at makes pagination unstable. Add ->orderBy("id", "desc") as a tiebreaker.'},
+
+{c:11,n:'inRandomOrder()',s:'inRandomOrder()',
+w:'Random ordering.',
+y:'Fine for "discover a post" on a small table.',
+x:`Post::inRandomOrder()->first();`,
+g:'<b>ORDER BY RAND() sorts the entire table.</b> On a large posts table, pick a random id range instead.'},
+
+{c:11,n:'select() / addSelect() / selectRaw()',s:'select($columns)',
+w:'Limits the columns returned, or adds a computed one.',
+y:'Your doc\'s "return only required data". A feed that does not render full article bodies should not transfer them — content is the biggest column in the table.',
+x:`Post::select('id', 'user_id', 'title', 'excerpt', 'cover_image', 'published_at')
+    ->with('user:id,name')
+    ->paginate(15);
+
+Post::selectRaw('status, count(*) as total')->groupBy('status')->get();`,
+g:'<b>Include every foreign key</b> you plan to eager load on, or the relation comes back null.'},
+
+{c:11,n:'Subquery select',s:'addSelect([\'alias\' => $subquery])',
+w:'Embeds a correlated subquery as a column.',
+y:'For values withCount cannot express — like the title of each user\'s most recent post.',
+x:`User::addSelect(['last_post_title' => Post::select('title')
+    ->whereColumn('user_id', 'users.id')
+    ->latest()
+    ->limit(1)
+])->get();`},
+
+{c:11,n:'join() / leftJoin()',s:'join($table, $first, $op, $second)',
+w:'A real SQL join — one flat result set instead of separate queries.',
+y:'Use when you must <b>sort or filter the parent</b> by a child column, which with() cannot do. Otherwise prefer with(), which keeps models clean.',
+x:`// sort posts by author name — impossible with with()
+Post::join('users', 'posts.user_id', '=', 'users.id')
+    ->select('posts.*', 'users.name as author_name')
+    ->orderBy('users.name')
+    ->paginate(15);`,
+g:'<b>Joins duplicate parent rows</b> when the child side is one-to-many — four comments means four copies of the post. That is why eager loading exists.'},
+
+{c:11,n:'groupBy() / having()',s:'groupBy($cols) | having($col, $op, $val)',
+w:'Aggregation. having filters on the aggregate; where filters before grouping.',
+y:'Reporting queries: posts per category, most active commenters.',
+x:`DB::table('posts')
+  ->select('category_id', DB::raw('count(*) as total'))
+  ->where('status', 'published')     // filters rows
+  ->groupBy('category_id')
+  ->having('total', '>', 5)          // filters groups
+  ->get();`,
+g:'<b>MySQL strict mode (ONLY_FULL_GROUP_BY)</b> rejects selecting a column that is neither grouped nor aggregated. XAMPP ships with it on.'},
+
+{c:11,n:'DB::raw() / whereRaw() / havingRaw()',s:'raw SQL fragments',
+w:'Drops to literal SQL where the builder has no equivalent.',
+y:'The escape hatch. Necessary occasionally, dangerous always.',
+x:`// SAFE — value is bound
+Post::whereRaw('char_length(title) > ?', [120])->get();
+
+// NEVER — SQL injection
+Post::whereRaw("title like '%$request->q%'")->get();`,
+g:'<b>Every raw value must be a binding.</b> String interpolation into raw SQL is the number one way a learning project gets exploited.'},
+
+{c:11,n:'union()',s:'$q1->union($q2)',
+w:'Combines two result sets.',
+y:'Rare, but useful for a merged activity feed built from different tables.',
+x:`$likes = Like::where('user_id', $uid)->select('post_id', 'created_at');
+$bookmarks = Bookmark::where('user_id', $uid)->select('post_id', 'created_at');
+$activity = $likes->union($bookmarks)->orderByDesc('created_at')->get();`},
+
+{c:11,n:'Indexes',s:'$table->index([...]) | unique([...])',
+w:'The structures that make all of the above fast.',
+y:'Phase 14 says optimisation must be evidence-driven. The evidence is: which columns appear in WHERE, JOIN and ORDER BY on your hot queries.',
+x:`$table->index('status');                      // feed filter
+$table->index(['status', 'published_at']);    // filter + sort together
+$table->unique(['user_id', 'post_id']);       // likes, bookmarks
+$table->unique(['follower_id', 'following_id']);
+$table->index('post_id');                     // comments lookup`,
+g:'<b>Composite order matters.</b> An index on (status, published_at) helps a query filtering status and sorting by published_at. The reverse order does not.'},
+
+// ---------- 12 collections ----------
+{c:12,n:'Collection basics',s:'what get() actually returns',
+w:'get() returns an Illuminate Collection, not a plain array — a wrapper with around 100 chainable methods.',
+y:'Everything in this section happens in PHP memory, <b>after</b> the database has already sent the rows. That is the whole trade-off: expressive, but it cannot reduce what was fetched.',
+x:`$posts = Post::latest()->take(50)->get();   // Collection, 50 models in memory
+$posts->count();     // no query
+$posts->first();     // no query`},
+
+{c:12,n:'map() / mapWithKeys()',s:'map(fn($item) => ...)',
+w:'Transforms every item into something else.',
+y:'Reshaping for a response, though an API Resource is usually the better home for that.',
+x:`$titles = $posts->map(fn ($p) => $p->title);
+
+$lookup = $posts->mapWithKeys(fn ($p) => [$p->slug => $p->title]);`},
+
+{c:12,n:'filter() / reject()',s:'filter(fn($item) => bool)',
+w:'Keeps or drops items by a predicate.',
+y:'Legitimate when the condition cannot be expressed in SQL — an accessor, or a computed value. Otherwise push it into the where clause.',
+x:`// FINE — filtering an already-loaded set
+$recent = $post->comments->filter(fn ($c) => $c->created_at->isToday());
+
+// WASTEFUL — fetched everything then threw most away
+Post::all()->filter(fn ($p) => $p->status === 'published');
+// use: Post::where('status', 'published')->get();`},
+
+{c:12,n:'pluck() on a collection',s:'$collection->pluck($key)',
+w:'Extracts one attribute from every item.',
+y:'No query — it reads models already in memory. Distinct from the query-builder pluck() above, which does run SQL.',
+x:`$post->tags->pluck('name')->implode(', ');   // "react-native, performance"`},
+
+{c:12,n:'groupBy() / keyBy()',s:'groupBy($key) | keyBy($key)',
+w:'Reshapes a flat collection into a keyed structure.',
+y:'This is your SectionList data in Phase 8: posts grouped under category headings.',
+x:`$sections = Post::with('category')->get()
+    ->groupBy(fn ($p) => $p->category->name)
+    ->map(fn ($posts, $name) => ['title' => $name, 'data' => $posts])
+    ->values();`},
+
+{c:12,n:'sortBy() / sortByDesc() / sortKeys()',s:'sortBy($key | fn)',
+w:'Sorts in memory.',
+y:'Valid only when sorting by something the database cannot see — an accessor or a computed score. Otherwise orderBy() is both faster and compatible with pagination.',
+x:`$post->comments->sortByDesc('created_at')->values();`,
+g:'<b>Sorting in PHP breaks pagination.</b> You can only sort the current page, so the ordering is wrong across pages.'},
+
+{c:12,n:'each() / tap() / when()',s:'each(fn($item))',
+w:'Iterates for side effects, or conditionally applies a transformation.',
+y:'each is a foreach that chains; when mirrors the query builder\'s conditional.',
+x:`$posts->each(fn ($p) => $p->loadMissing('tags'));
+
+$posts->when($request->reverse, fn ($c) => $c->reverse());`},
+
+{c:12,n:'contains() / firstWhere() / unique()',s:'lookup helpers',
+w:'Membership tests and de-duplication without a query.',
+y:'Once a relation is loaded, checking it in memory is free; re-querying is not.',
+x:`$post->likes->contains('user_id', $uid);        // no query
+$post->tags->firstWhere('slug', 'laravel');
+$posts->pluck('user_id')->unique()->count();`},
+
+{c:12,n:'sum() / avg() / partition() / flatten()',s:'aggregate &amp; restructure',
+w:'In-memory aggregates and reshaping.',
+y:'Fine over a loaded relation, wrong over the whole table.',
+x:`$post->comments->count();                            // already loaded: free
+$posts->partition(fn ($p) => $p->status === 'published');  // [published, drafts]
+$posts->pluck('tags')->flatten()->unique('id');`},
+
+{c:12,n:'SQL or collection? the rule',s:'decision guide',
+w:'When to filter in the database versus in PHP.',
+y:'The question is always: <b>am I reducing a set I already paid to fetch, or am I avoiding fetching it?</b> Only the second one is an optimisation.',
+x:`// DATABASE — the set is large or unbounded
+Post::where('status', 'published')->latest()->paginate(15);
+
+// COLLECTION — the set is already in memory and small
+$post->comments->groupBy(fn ($c) => $c->created_at->format('Y-m-d'));`},
+
+// ---------- 13 model state ----------
+{c:13,n:'refresh() / fresh()',s:'$model->refresh() | fresh()',
+w:'refresh reloads the same instance from the database; fresh returns a new one and leaves the original alone.',
+y:'Needed after a raw update, an increment, or a database default or trigger fired — your in-memory copy is stale.',
+x:`$post->increment('views_count');
+$post->views_count;              // stale
+$post->refresh()->views_count;   // current`},
+
+{c:13,n:'isDirty() / wasChanged() / getOriginal() / getChanges()',s:'change tracking',
+w:'Inspect what changed before and after a save.',
+y:'The backbone of observers and audit logs: fire a notification only when status actually became published, not on every save.',
+x:`$post->title = 'New';
+$post->isDirty('title');       // true  (before save)
+$post->getOriginal('title');   // old value
+$post->save();
+$post->wasChanged('title');    // true  (after save)
+$post->getChanges();           // ['title' => 'New', 'updated_at' => ...]`},
+
+{c:13,n:'is() / isNot()',s:'$model->is($other)',
+w:'Compares two models by key and table, not by PHP object identity.',
+y:'Ownership checks read clearly: "is this post\'s author the current user".',
+x:`if ($post->user->is($request->user())) { /* owner */ }`},
+
+{c:13,n:'only() / except() / toArray() / toJson()',s:'serialization',
+w:'Converts a model to an array or JSON, optionally restricted.',
+y:'toArray applies $hidden, $casts and $appends — it is not a raw column dump.',
+x:`$post->only(['id', 'title']);
+$post->toArray();
+$user->toJson();`},
+
+{c:13,n:'$hidden / $visible / makeHidden() / makeVisible()',s:'attribute visibility',
+w:'Keeps attributes out of JSON responses, permanently or per request.',
+y:'password and remember_token must never reach the mobile app. $hidden on User is the baseline defence.',
+x:`class User extends Model
+{
+    protected $hidden = ['password', 'remember_token', 'email'];
+}
+
+$user->makeVisible('email')->toArray();   // for the owner's own profile`},
+
+{c:13,n:'relationLoaded() / setRelation()',s:'relation introspection',
+w:'Checks or sets a loaded relation without hitting the database.',
+y:'How API resources avoid triggering lazy loads — the basis of whenLoaded().',
+x:`if ($post->relationLoaded('comments')) { /* safe to read */ }`},
+
+{c:13,n:'getKey() / getTable() / getRouteKeyName()',s:'metadata',
+w:'Generic access to the key, table and route-binding column.',
+y:'getRouteKeyName lets you bind routes by slug instead of id, which is better for deep links from the app.',
+x:`class Post extends Model
+{
+    public function getRouteKeyName(): string { return 'slug'; }
+}
+// Route::get('/posts/{post}') now resolves by slug`},
+
+// ---------- 14 scopes ----------
+{c:14,n:'Local scope',s:'public function scopePublished($query)',
+w:'A named, reusable chunk of query logic on the model.',
+y:'where("status","published")->whereNotNull("published_at") appears in six controllers. One scope means one place to change it when the definition of "published" grows.',
+x:`class Post extends Model
+{
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published')
+                     ->whereNotNull('published_at')
+                     ->where('published_at', '<=', now());
+    }
+}
+
+Post::published()->latest()->paginate(15);   // drop the "scope" prefix`},
+
+{c:14,n:'Scope with arguments',s:'scopeOfCategory($query, $slug)',
+w:'A scope that takes parameters.',
+y:'Turns a filter into vocabulary: Post::published()->ofCategory("tech") reads like the requirement it implements.',
+x:`public function scopeOfCategory($query, string $slug)
+{
+    return $query->whereRelation('category', 'slug', $slug);
+}
+
+public function scopeSearch($query, ?string $term)
+{
+    return $query->when($term, fn ($q) =>
+        $q->whereAny(['title', 'excerpt'], 'like', "%$term%"));
+}
+
+Post::published()->ofCategory('tech')->search($request->q)->paginate(15);`},
+
+{c:14,n:'Global scope',s:'static::addGlobalScope(...)',
+w:'A condition applied to <b>every</b> query for that model automatically.',
+y:'SoftDeletes is itself a global scope. Use it for rules that must never be forgotten — but it is invisible at the call site, which is exactly why it is risky.',
+x:`protected static function booted(): void
+{
+    static::addGlobalScope('published', function (Builder $q) {
+        $q->where('status', 'published');
+    });
+}
+
+Post::all();                                    // only published
+Post::withoutGlobalScope('published')->get();   // everything (admin)
+Post::withoutGlobalScopes()->get();`,
+g:'<b>Prefer a local scope.</b> A global scope has surprised every developer who ever debugged "why is this row missing" for an hour.'},
+
+// ---------- 15 casts ----------
+{c:15,n:'casts()',s:'protected function casts(): array',
+w:'Converts a column between its database type and a PHP type, both directions.',
+y:'MySQL has no boolean and no array. Casts mean your code works with real types instead of 0/1 and JSON strings — and the mobile app receives proper JSON booleans rather than "0".',
+x:`class Post extends Model
+{
+    protected function casts(): array
+    {
+        return [
+            'published_at' => 'datetime',
+            'is_featured'  => 'boolean',
+            'meta'         => 'array',       // JSON column <-> PHP array
+            'settings'     => AsCollection::class,
+        ];
+    }
+}
+
+$post->published_at->diffForHumans();   // Carbon instance
+$post->meta['reading_time'];            // array, not a JSON string`,
+g:'<b>Laravel 10 and earlier</b> use protected $casts = [...] as a property. Laravel 11+ uses the casts() method. Both still work in 11.'},
+
+{c:15,n:'Accessor — Attribute::make(get:)',s:'protected function excerpt(): Attribute',
+w:'A computed read-only attribute derived from real columns.',
+y:'Keeps presentation logic out of the controller and off the client. The app asks for excerpt; it does not care that it was generated from content.',
+x:`use Illuminate\\Database\\Eloquent\\Casts\\Attribute;
+
+protected function excerpt(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value, $attributes) =>
+            $value ?: Str::limit(strip_tags($attributes['content']), 160),
+    );
+}`,
+g:'<b>Accessors are invisible to SQL.</b> You cannot where() or orderBy() an accessor — the database has never heard of it.'},
+
+{c:15,n:'Mutator — Attribute::make(set:)',s:'set: fn($value) => ...',
+w:'Transforms a value on its way into the model.',
+y:'Guarantees an invariant no matter which controller writes. The slug is always derived from the title; nobody can forget.',
+x:`protected function title(): Attribute
+{
+    return Attribute::make(
+        set: fn (string $value) => [
+            'title' => $value,
+            'slug'  => Str::slug($value),
+        ],
+    );
+}
+
+$post->title = 'Why FlatList is fast';   // slug set automatically`},
+
+{c:15,n:'$appends',s:'protected $appends = [...]',
+w:'Includes an accessor in the JSON output.',
+y:'Accessors are not serialized unless appended. This is how a computed field reaches the app.',
+x:`protected $appends = ['reading_time'];
+
+protected function readingTime(): Attribute
+{
+    return Attribute::make(
+        get: fn () => ceil(str_word_count($this->content) / 200) . ' min read',
+    );
+}`,
+g:'<b>An appended accessor that touches a relation</b> causes an N+1 on every list endpoint. Compute it from columns only, or put it in a Resource instead.'},
+
+{c:15,n:'Custom cast class',s:'implements CastsAttributes',
+w:'Reusable casting logic shared across models.',
+y:'When the same transformation appears on several models, a cast class beats copy-pasted accessors.',
+x:`class MoneyCast implements CastsAttributes
+{
+    public function get($model, $key, $value, $attributes) { return $value / 100; }
+    public function set($model, $key, $value, $attributes) { return $value * 100; }
+}
+
+protected function casts(): array { return ['price' => MoneyCast::class]; }`},
+
+// ---------- 16 resources ----------
+{c:16,n:'JsonResource',s:'php artisan make:resource PostResource',
+w:'A transformation layer between your models and the JSON your app receives.',
+y:'Without it, adding a column to posts silently changes your API contract and can leak internal fields. A Resource makes the contract explicit and version-able — which is what section 4.5 of your doc is really asking for.',
+x:`class PostResource extends JsonResource
+{
+    public function toArray($request): array
+    {
+        return [
+            'id'             => $this->id,
+            'title'          => $this->title,
+            'excerpt'        => $this->excerpt,
+            'cover_image'    => $this->cover_image
+                                  ? asset('storage/' . $this->cover_image) : null,
+            'published_at'   => $this->published_at?->toIso8601String(),
+            'likes_count'    => $this->likes_count ?? 0,
+            'comments_count' => $this->comments_count ?? 0,
+            'is_liked'       => (bool) ($this->is_liked ?? false),
+            'author'         => new UserResource($this->whenLoaded('user')),
+            'tags'           => TagResource::collection($this->whenLoaded('tags')),
+        ];
+    }
+}`},
+
+{c:16,n:'whenLoaded()',s:'$this->whenLoaded(\'relation\')',
+w:'Includes a relation in the response only if it was eager loaded.',
+y:'Without it, the resource itself triggers a lazy load — so the resource becomes the N+1 source, which is painful to track down because the controller looks innocent.',
+x:`'author'   => new UserResource($this->whenLoaded('user')),
+'comments' => CommentResource::collection($this->whenLoaded('comments')),`,
+g:'<b>The key disappears entirely</b> when not loaded. Your TypeScript types should mark those fields optional.'},
+
+{c:16,n:'collection() / ResourceCollection',s:'PostResource::collection($posts)',
+w:'Applies a resource to many models, preserving pagination metadata.',
+y:'Passing a paginator through collection() keeps the links and meta blocks your infinite scroll depends on.',
+x:`return PostResource::collection(
+    Post::with('user')->withCount('likes')->latest()->paginate(15)
+);`},
+
+{c:16,n:'when() / whenNotNull() / mergeWhen()',s:'conditional attributes',
+w:'Includes fields only under a condition.',
+y:'Return the author\'s own email to them, never to other users — one resource, two audiences.',
+x:`'email' => $this->when($request->user()?->is($this->resource), $this->email),
+'is_owner' => $request->user()?->id === $this->user_id,`},
+
+{c:16,n:'additional() / response()',s:'->additional([...])',
+w:'Adds top-level keys and controls headers or status codes.',
+y:'Keeps your success/message/data envelope consistent with section 4.5.',
+x:`return PostResource::collection($posts)
+    ->additional(['success' => true, 'message' => 'Posts fetched successfully'])
+    ->response()
+    ->setStatusCode(200);`},
+
+// ---------- 17 transactions ----------
+{c:17,n:'DB::transaction()',s:'DB::transaction(fn() => ..., $attempts = 1)',
+w:'Runs a closure in a transaction: commits on success, rolls back on any exception.',
+y:'Your doc lists "transactions for multi-write operations". The rule: whenever one logical action writes to more than one table, a partial failure must leave <b>nothing</b> behind.',
+x:`$post = DB::transaction(function () use ($request) {
+    $post = $request->user()->posts()->create($request->validated());
+
+    $tagIds = collect($request->tags)->map(fn ($name) =>
+        Tag::firstOrCreate(['slug' => Str::slug($name)], ['name' => $name])->id
+    );
+    $post->tags()->sync($tagIds);
+
+    return $post;
+});`,
+g:'<b>Returns the closure\'s return value</b>, so you can assign straight from it. The second argument retries on deadlock — useful under concurrency.'},
+
+{c:17,n:'beginTransaction() / commit() / rollBack()',s:'manual control',
+w:'The explicit form, for when control flow does not fit a closure.',
+y:'Prefer the closure version — it cannot leak an open transaction if you forget a path.',
+x:`DB::beginTransaction();
+try {
+    // writes
+    DB::commit();
+} catch (\\Throwable $e) {
+    DB::rollBack();
+    throw $e;
+}`},
+
+{c:17,n:'lockForUpdate() / sharedLock()',s:'row-level locks',
+w:'Locks the selected rows until the transaction ends.',
+y:'The real fix for check-then-write races. If you ever denormalise a counter, lock the row before reading it.',
+x:`DB::transaction(function () use ($postId) {
+    $post = Post::lockForUpdate()->find($postId);
+    $post->likes_count++;
+    $post->save();
+});`,
+g:'<b>Only works inside a transaction</b>, and held locks block other requests — keep the critical section short.'},
+
+{c:17,n:'afterCommit',s:'$afterCommit = true | DB::afterCommit()',
+w:'Delays queued jobs and events until the transaction actually commits.',
+y:'Without it, a notification job can run before the row it references exists — and fail with "model not found" on a row that did get created a millisecond later.',
+x:`class SendNewPostNotification implements ShouldQueue
+{
+    public $afterCommit = true;
+}`},
+
+// ---------- 18 events ----------
+{c:18,n:'Model events',s:'creating, created, updating, updated, saving, saved, deleting, deleted',
+w:'Hooks that fire automatically around persistence.',
+y:'For invariants that must hold regardless of which code path saved the model.',
+x:`protected static function booted(): void
+{
+    static::creating(function (Post $post) {
+        $post->slug ??= Str::slug($post->title) . '-' . Str::random(6);
+    });
+
+    static::deleting(function (Post $post) {
+        Storage::delete($post->cover_image);   // clean up the file too
+    });
+}`,
+g:'<b>Bulk queries skip events.</b> Post::where(...)->update(...) and ->delete() fire nothing. Only instance methods do.'},
+
+{c:18,n:'Observers',s:'php artisan make:observer PostObserver --model=Post',
+w:'The same events moved into a dedicated class.',
+y:'Once you have more than two hooks, booted() becomes a dumping ground. An observer keeps the model readable.',
+x:`class PostObserver
+{
+    public function created(Post $post): void
+    {
+        $post->user->followers->each->notify(new NewPostPublished($post));
+    }
+
+    public function updated(Post $post): void
+    {
+        if ($post->wasChanged('status') && $post->status === 'published') {
+            // fired only on the actual transition
+        }
+    }
+}
+
+// AppServiceProvider: Post::observe(PostObserver::class);`},
+
+{c:18,n:'saveQuietly() / withoutEvents()',s:'muting events',
+w:'Saves without firing observers.',
+y:'Essential inside an observer itself, or you get infinite recursion when the hook saves the model it is observing.',
+x:`$post->saveQuietly();
+
+Model::withoutEvents(fn () => $post->update(['status' => 'archived']));`},
+
+// ---------- 19 debugging ----------
+{c:19,n:'toSql() / toRawSql() / ddRawSql()',s:'inspect the generated query',
+w:'Shows the SQL a builder will produce, with or without bindings filled in.',
+y:'Before you optimise, see what you are actually sending. Half of Phase 14 is just looking.',
+x:`Post::with('user')->where('status', 'published')->toSql();
+// select * from posts where status = ?
+
+Post::where('status', 'published')->toRawSql();     // bindings substituted
+Post::where('status', 'published')->ddRawSql();     // dump and die`},
+
+{c:19,n:'DB::listen()',s:'DB::listen(fn($query) => ...)',
+w:'Logs every query the request runs, with timing.',
+y:'The most direct way to <b>see</b> an N+1: load your feed endpoint and watch forty near-identical selects scroll past.',
+x:`// AppServiceProvider::boot()
+if (! app()->isProduction()) {
+    DB::listen(function ($query) {
+        Log::debug($query->sql, ['time' => $query->time, 'bindings' => $query->bindings]);
+    });
+}`},
+
+{c:19,n:'Query count assertion',s:'count queries per request',
+w:'Turns "is this endpoint efficient" into a number you can watch.',
+y:'A feed endpoint should be a constant number of queries whether it returns 1 post or 100. If the count grows with the data, you have an N+1.',
+x:`DB::enableQueryLog();
+$response = $this->getJson('/api/posts');
+$this->assertLessThan(8, count(DB::getQueryLog()));`},
+
+{c:19,n:'explain()',s:'$query->explain()',
+w:'Asks MySQL how it plans to run the query.',
+y:'Tells you whether your index is actually being used. "type: ALL" means a full table scan.',
+x:`Post::where('status', 'published')->orderByDesc('published_at')->explain()->dd();`},
+
+{c:19,n:'preventSilentlyDiscardingAttributes()',s:'Model::preventSilentlyDiscardingAttributes()',
+w:'Throws when you mass-assign an attribute missing from $fillable.',
+y:'Otherwise Laravel drops it silently and you spend an hour wondering why the field never saves.',
+x:`Model::preventSilentlyDiscardingAttributes(! app()->isProduction());`},
+
+// ---------- 20 caching ----------
+{c:20,n:'Cache::remember()',s:'Cache::remember($key, $ttl, fn() => ...)',
+w:'Returns the cached value, or computes and stores it on a miss.',
+y:'Your doc says caching comes <b>after</b> measuring a real need — that ordering is right. When you do reach for it, categories are the obvious first candidate: read on every Explore load, written roughly never.',
+x:`$categories = Cache::remember('categories.all', now()->addHours(6),
+    fn () => Category::withCount('posts')->orderBy('name')->get()
+);`,
+g:'<b>Never cache anything user-specific under a shared key.</b> Caching the feed with is_liked baked in will show one user another user\'s likes.'},
+
+{c:20,n:'Cache::forget() / invalidation',s:'forget($key) | flush()',
+w:'Removes a cached value so the next read recomputes it.',
+y:'The hard half of caching. A cache you never invalidate is a bug with a timer on it.',
+x:`class CategoryObserver
+{
+    public function saved()   { Cache::forget('categories.all'); }
+    public function deleted() { Cache::forget('categories.all'); }
+}`},
+
+{c:20,n:'Cache::flexible()',s:'Cache::flexible($key, [$fresh, $stale], fn())',
+w:'Serves slightly stale data instantly while refreshing in the background. Laravel 11.23+.',
+y:'Nobody waits for the recomputation — good for a trending list that may be a minute out of date.',
+x:`Cache::flexible('trending.posts', [60, 600], fn () =>
+    Post::withCount('likes')->orderByDesc('likes_count')->take(10)->get()
+);`},
+
+{c:20,n:'Rate limiting',s:'throttle middleware',
+w:'Caps requests per minute per user or IP.',
+y:'Listed in your security section. Login and comment endpoints need it most — the first against credential stuffing, the second against spam.',
+x:`Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+});
+
+Route::post('/login', ...)->middleware('throttle:5,1');`}
+];
+
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const RX=/(\/\/[^\n]*)|('(?:[^'\\]|\\.)*')|(\$[A-Za-z_]\w*)|((?:->|::)[A-Za-z_]\w*)|\b(true|false|null|new|function|return|use|public|protected|private|class|static|extends|implements|foreach|if|else|fn|array|string|bool|int|void)\b|\b([A-Z]\w+)\b|\b(\d+)\b/g;
+function hl(code){
+  let o='',l=0,m;
+  RX.lastIndex=0;
+  while((m=RX.exec(code))!==null){
+    o+=esc(code.slice(l,m.index));
+    const t=esc(m[0]);
+    if(m[1])o+='<span class="c">'+t+'</span>';
+    else if(m[2])o+='<span class="s">'+t+'</span>';
+    else if(m[3])o+='<span class="v">'+t+'</span>';
+    else if(m[4])o+='<span class="m">'+t+'</span>';
+    else if(m[5])o+='<span class="k">'+t+'</span>';
+    else if(m[6])o+='<span class="n">'+t+'</span>';
+    else o+='<span class="v">'+t+'</span>';
+    l=m.index+m[0].length;
+  }
+  return o+esc(code.slice(l));
+}
+function id(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+
+$('#schema').innerHTML=TABLES.map(t=>'<div class="st"><b>'+t[0]+'</b><span>'+t[1]+'</span></div>').join('');
+
+let html='';
+CATS.forEach((cat,ci)=>{
+  const items=M.filter(m=>m.c===ci);
+  html+='<section data-cat="'+ci+'"><h2 class="cat" id="c'+ci+'">'+cat[0]+'<em>'+items.length+' methods</em></h2><p class="catnote">'+cat[1]+'</p>';
+  items.forEach(m=>{
+    html+='<article class="card" id="'+id(m.n)+'" data-k="'+esc((m.n+' '+m.s+' '+m.w+' '+m.x).toLowerCase())+'">'
+      +'<div class="ch"><span class="nm">'+esc(m.n)+'</span><span class="sig">'+esc(m.s)+'</span></div>'
+      +'<p class="w">'+m.w+'</p><p class="y">'+m.y+'</p>'
+      +'<pre>'+hl(m.x)+'</pre>'
+      +(m.q?'<div class="sq">'+esc(m.q)+'</div>':'')
+      +(m.g?'<div class="g">'+m.g+'</div>':'')
+      +'</article>';
+  });
+  html+='</section>';
+});
+$('#out').innerHTML=html;
+$('#nav').innerHTML=CATS.map((c,i)=>'<a href="#c'+i+'" data-i="'+i+'">'+c[0]+'<i>'+M.filter(m=>m.c===i).length+'</i></a>').join('');
+$('#cnt').textContent=M.length+' methods';
+
+const cards=[...document.querySelectorAll('.card')];
+const secs=[...document.querySelectorAll('section')];
+$('#q').addEventListener('input',e=>{
+  const t=e.target.value.trim().toLowerCase();
+  let n=0;
+  cards.forEach(c=>{const ok=!t||c.dataset.k.includes(t);c.classList.toggle('none',!ok);if(ok)n++});
+  secs.forEach(s=>{
+    const any=[...s.querySelectorAll('.card')].some(c=>!c.classList.contains('none'));
+    s.classList.toggle('none',!any);
+  });
+  $('#cnt').textContent=t?n+' of '+M.length+' methods':M.length+' methods';
+  $('#empty').style.display=n?'none':'block';
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='/'&&document.activeElement!==$('#q')){e.preventDefault();$('#q').focus()}
+  if(e.key==='Escape'&&document.activeElement===$('#q')){$('#q').value='';$('#q').dispatchEvent(new Event('input'));$('#q').blur()}
+});
+const links=[...document.querySelectorAll('nav a')];
+const io=new IntersectionObserver(es=>{
+  es.forEach(en=>{
+    if(en.isIntersecting){
+      const i=en.target.dataset.cat;
+      links.forEach(a=>a.classList.toggle('on',a.dataset.i===i));
+    }
+  });
+},{rootMargin:'-80px 0px -75% 0px'});
+secs.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
